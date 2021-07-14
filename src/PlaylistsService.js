@@ -7,7 +7,7 @@ class PlaylistsService {
 
   async getPlaylistById(playlistId, userId) {
     const query = {
-      text: `SELECT playlist.* FROM playlists
+      text: `SELECT playlists.* FROM playlists
       LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
       WHERE (playlists.owner = $2 OR collaborations.playlist_id = $2)
       AND playlists.id = $1
@@ -18,7 +18,7 @@ class PlaylistsService {
     const result = await this._pool.query(query);
 
     if (result.rowCount) {
-      const playlist = result.rows;
+      const info = result.rows;
 
       const querySongs = {
         text: `SELECT songs.* FROM songs
@@ -31,7 +31,7 @@ class PlaylistsService {
       const songs = resultSongs.rows;
 
       return {
-        playlist,
+        info,
         songs,
       };
     }
